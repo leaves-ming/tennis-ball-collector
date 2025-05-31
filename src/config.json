@@ -2,7 +2,7 @@
     "hardware": {
         "board_type": "Orange Pi AIpro(20T)",
         "gpio_mode": "BOARD",
-        "camera_type": "csi",  # 或 "usb"，根据实际连接选择
+        "camera_type": "csi",  
         "motor_pins": {
             "left_forward": 12,
             "left_backward": 16,
@@ -15,7 +15,7 @@
             "arm_elbow": 35,
             "gripper": 36
         },
-        "pwm_frequency": 50  # PWM频率(Hz)
+        "pwm_frequency": 50  
     },
     "image_processing": {
         "lower_yellow": [20, 100, 100],
@@ -24,13 +24,13 @@
         "max_ball_radius": 100,
         "focal_length": 800,
         "known_ball_diameter": 6.7,
-        "use_npu": false  # 是否使用NPU加速(需安装相关驱动)
+        "use_npu": false  
     },
     "robot_control": {
-        "move_speed": 70,       # 移动速度百分比
-        "turn_speed": 50,       # 转向速度百分比
-        "collect_distance": 30, # 收集距离(cm)
-        "search_turn_time": 0.3 # 搜索时每次旋转时间(s)
+        "move_speed": 70,      
+        "turn_speed": 50,       
+        "collect_distance": 30, 
+        "search_turn_time": 0.3
     },
     "debug": {
         "show_video": true,
