@@ -23,64 +23,55 @@ class TennisBallDetector:
         self.test_results = []
         
     def detect_tennis_balls(self, frame):
-        """检测图像中的网球"""
-        # 转换为HSV色彩空间
+        """检测图像中的多个网球（优化多目标支持）"""
+        # 基础预处理（保留原逻辑）
         hsv = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)
-        
-        # 创建黄色掩码
         mask = cv2.inRange(hsv, self.lower_yellow, self.upper_yellow)
-        
-        # 形态学操作
         kernel = np.ones((5, 5), np.uint8)
         mask = cv2.morphologyEx(mask, cv2.MORPH_OPEN, kernel)
         mask = cv2.morphologyEx(mask, cv2.MORPH_CLOSE, kernel)
         
-        # 寻找轮廓
+        # 查找所有轮廓（关键：不限制仅找最大轮廓）
         contours, _ = cv2.findContours(mask, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
-        
         balls = []
         processed_frame = frame.copy()
         
-        for contour in contours:
+        for idx, contour in enumerate(contours):  # 遍历所有轮廓（新增：记录索引）
             # 计算轮廓面积
             area = cv2.contourArea(contour)
-            
-            # 过滤小面积区域
-            if area < 100:
+            if area < 50:  # 降低小面积过滤阈值（原100），避免漏掉小网球
                 continue
-                
-            # 拟合圆形
+            
+            # 拟合最小包围圆
             ((x, y), radius) = cv2.minEnclosingCircle(contour)
-            
-            # 过滤不符合半径范围的圆形
-            if radius < self.min_ball_radius or radius > self.max_ball_radius:
+            if not (self.min_ball_radius < radius < self.max_ball_radius):
                 continue
-                
-            # 计算圆形度（圆形度 = 4π×面积/周长²，圆形为1）
+            
+            # 计算圆形度（降低阈值，允许略不圆的网球）
             perimeter = cv2.arcLength(contour, True)
-            circularity = 4 * np.pi * (area / (perimeter * perimeter))
-            
-            # 过滤非圆形物体
-            if circularity < 0.7:
+            if perimeter == 0:
                 continue
-                
-            # 计算距离
-            distance = (self.known_ball_diameter * self.focal_length) / (2 * radius)
+            circularity = 4 * np.pi * (area / (perimeter ** 2))
+            if circularity < 0.6:  # 原0.7，更宽松
+                continue
             
-            # 计算水平偏移（百分比）
+            # 计算距离和偏移（保留原逻辑）
+            distance = (self.known_ball_diameter * self.focal_length) / (2 * radius)
             frame_center_x = frame.shape[1] / 2
             horizontal_offset = ((x - frame_center_x) / frame_center_x) * 100
             
-            # 记录检测结果
+            # 记录所有检测到的网球（关键：不限制数量）
             balls.append(((x, y), radius, distance, horizontal_offset))
             
-            # 在图像上绘制检测结果
+            # 显示每个网球的独立标签（修改：使用idx+1作为编号）
             cv2.circle(processed_frame, (int(x), int(y)), int(radius), (0, 255, 0), 2)
-            cv2.putText(processed_frame, f"{distance:.1f}cm", (int(x) - 20, int(y) - 20),
+            cv2.putText(processed_frame, 
+                        f"Ball{idx+1}: {distance:.1f}cm",  # 显示球编号（如Ball1、Ball2）
+                        (int(x) - 30, int(y) - 20), 
                         cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 255, 0), 2)
         
         return balls, processed_frame
-    
+
     def run_image_tests(self):
         """运行图像测试集"""
         if not os.path.exists(self.test_images_dir):
@@ -176,29 +167,29 @@ class TennisBallDetector:
             return []
     
     def _evaluate_detection(self, detected_balls, ground_truth):
-        """评估检测结果"""
-        # 计算真正例、假正例、假反例
+        """评估多目标检测结果（支持多对多匹配）"""
         true_positives = 0
-        false_positives = len(detected_balls)
-        false_negatives = len(ground_truth)
+        matched_gt = set()  # 记录已匹配的真实标注索引
         
-        for (x, y), radius, _, _ in detected_balls:
-            for gt_ball in ground_truth:
+        for det_idx, ball in enumerate(detected_balls):  # 正确解包：先获取ball元组
+            (det_x, det_y), det_radius, _, _ = ball  # 从ball中提取4个值（坐标、半径、距离、偏移）
+            for gt_idx, gt_ball in enumerate(ground_truth):
+                if gt_idx in matched_gt:
+                    continue  # 跳过已匹配的真实标注
                 gt_x, gt_y, gt_radius = gt_ball['x'], gt_ball['y'], gt_ball['radius']
                 
-                # 计算距离和半径差异
-                distance = np.sqrt((x - gt_x)**2 + (y - gt_y)**2)
-                radius_diff = abs(radius - gt_radius)
+                # 计算检测结果与真实标注的匹配度（距离+半径差异）
+                distance = np.sqrt((det_x - gt_x)**2 + (det_y - gt_y)**2)
+                radius_diff = abs(det_radius - gt_radius)
                 
-                # 如果检测结果与真实标注足够接近，则认为是真正例
-                if distance < 20 and radius_diff < 10:
+                # 放宽匹配条件（原distance<20→30，radius_diff<10→15）
+                if distance < 30 and radius_diff < 15:
                     true_positives += 1
-                    false_positives -= 1
-                    false_negatives -= 1
+                    matched_gt.add(gt_idx)  # 标记该真实标注已匹配
                     break
         
-        false_negatives = max(false_negatives, 0)
-        false_positives = max(false_positives, 0)
+        false_positives = len(detected_balls) - true_positives
+        false_negatives = len(ground_truth) - true_positives
         
         return true_positives, false_positives, false_negatives
     

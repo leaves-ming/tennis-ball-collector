@@ -96,30 +96,30 @@ class TennisBallCollector:
                 self.controller.cleanup()
 
     def _process_detection_results(self, balls):
-        """根据检测结果执行相应动作"""
+        """根据多目标检测结果执行动作（优先处理最近的球）"""
         if not balls:
-            # 没有检测到网球，进入搜索状态
+            # 无球，进入搜索状态（保留原逻辑）
             self.current_state = self.STATE_SEARCHING
             if not self.config["test"]["test_mode"]:
                 self.controller.search_for_balls()
             return
-
-        # 获取最大的网球（最可能是最近的）
-        largest_ball = max(balls, key=lambda b: b[1])
+        
+        # 按半径从大到小排序（半径越大，距离越近）
+        sorted_balls = sorted(balls, key=lambda b: b[1], reverse=True)
+        largest_ball = sorted_balls[0]  # 选择最近的球
         (x, y), radius, distance, horizontal_offset = largest_ball
-
+        
+        # 保留原动作逻辑（向最近的球移动/收集）
         if distance > self.config["robot_control"]["collect_distance"]:
-            # 距离大于收集距离，向网球移动
             self.current_state = self.STATE_MOVING
             if not self.config["test"]["test_mode"]:
                 self.controller.move_towards_ball(horizontal_offset, distance)
         else:
-            # 距离足够近，收集网球
             self.current_state = self.STATE_COLLECTING
             if not self.config["test"]["test_mode"]:
                 self.controller.collect_ball()
-
-        print(f"状态: {self.current_state}, 距离: {distance:.1f}cm, 偏移: {horizontal_offset:.1f}%")
+        
+        print(f"状态: {self.current_state}, 检测到{len(balls)}个球, 最近距离: {distance:.1f}cm")
 
     def _simulate_robot_actions(self):
         # 模拟机器人动作，这里可以根据需要添加具体的模拟逻辑
