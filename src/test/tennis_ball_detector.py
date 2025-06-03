@@ -5,69 +5,65 @@ import os
 import json
 import time
 from datetime import datetime
+import torch  # 新增YOLOv5依赖
 
 class TennisBallDetector:
     def __init__(self, config):
         self.config = config
-        self.lower_yellow = np.array(config["image_processing"]["lower_yellow"])
-        self.upper_yellow = np.array(config["image_processing"]["upper_yellow"])
+        # YOLOv5模型配置（新增）
+        self.model_path = config["yolov5"]["model_path"]  # 训练好的模型路径（如./yolov5/runs/train/exp/weights/best.pt）
+        self.conf_threshold = config["yolov5"]["conf_threshold"]  # 置信度阈值（如0.5）
+        self.iou_threshold = config["yolov5"]["iou_threshold"]    # NMS的IOU阈值
+        
+        # 加载YOLOv5模型（新增）
+        self.model = torch.hub.load('ultralytics/yolov5', 'custom', path=self.model_path, force_reload=True)
+        self.model.conf = self.conf_threshold  # 设置置信度阈值
+        self.model.iou = self.iou_threshold    # 设置NMS阈值
+        
+        # 原OpenCV参数（保留）
         self.min_ball_radius = config["image_processing"]["min_ball_radius"]
         self.max_ball_radius = config["image_processing"]["max_ball_radius"]
         self.focal_length = config["image_processing"]["focal_length"]
         self.known_ball_diameter = config["image_processing"]["known_ball_diameter"]
         
-        # 测试模式相关
+        # 测试模式相关（保留）
         self.test_mode = config["test"]["test_mode"]
         self.test_images_dir = config["test"]["test_images_dir"]
         self.ground_truth_dir = config["test"]["ground_truth_dir"]
         self.test_results = []
-        
+
     def detect_tennis_balls(self, frame):
-        """检测图像中的多个网球（优化多目标支持）"""
-        # 基础预处理（保留原逻辑）
-        hsv = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)
-        mask = cv2.inRange(hsv, self.lower_yellow, self.upper_yellow)
-        kernel = np.ones((5, 5), np.uint8)
-        mask = cv2.morphologyEx(mask, cv2.MORPH_OPEN, kernel)
-        mask = cv2.morphologyEx(mask, cv2.MORPH_CLOSE, kernel)
+        """使用YOLOv5的网球检测（替代原OpenCV逻辑）"""
+        # YOLOv5推理（新增）
+        results = self.model(frame)  # 输入BGR格式图像
         
-        # 查找所有轮廓（关键：不限制仅找最大轮廓）
-        contours, _ = cv2.findContours(mask, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+        # 解析检测结果（新增）
         balls = []
         processed_frame = frame.copy()
-        
-        for idx, contour in enumerate(contours):  # 遍历所有轮廓（新增：记录索引）
-            # 计算轮廓面积
-            area = cv2.contourArea(contour)
-            if area < 50:  # 降低小面积过滤阈值（原100），避免漏掉小网球
-                continue
+        for *xyxy, conf, cls in results.xyxy[0].tolist():  # xyxy: [x1,y1,x2,y2]
+            x1, y1, x2, y2 = map(int, xyxy)
+            x_center = (x1 + x2) / 2  # 中心点x坐标
+            y_center = (y1 + y2) / 2  # 中心点y坐标
+            radius = (x2 - x1) / 2     # 近似半径（假设包围框为正方形）
             
-            # 拟合最小包围圆
-            ((x, y), radius) = cv2.minEnclosingCircle(contour)
+            # 过滤不符合半径范围的球（保留原逻辑）
             if not (self.min_ball_radius < radius < self.max_ball_radius):
                 continue
             
-            # 计算圆形度（降低阈值，允许略不圆的网球）
-            perimeter = cv2.arcLength(contour, True)
-            if perimeter == 0:
-                continue
-            circularity = 4 * np.pi * (area / (perimeter ** 2))
-            if circularity < 0.6:  # 原0.7，更宽松
-                continue
-            
-            # 计算距离和偏移（保留原逻辑）
+            # 计算距离（保留原公式）
             distance = (self.known_ball_diameter * self.focal_length) / (2 * radius)
+            
+            # 计算水平偏移（保留原逻辑）
             frame_center_x = frame.shape[1] / 2
-            horizontal_offset = ((x - frame_center_x) / frame_center_x) * 100
+            horizontal_offset = ((x_center - frame_center_x) / frame_center_x) * 100
             
-            # 记录所有检测到的网球（关键：不限制数量）
-            balls.append(((x, y), radius, distance, horizontal_offset))
+            balls.append(((x_center, y_center), radius, distance, horizontal_offset))
             
-            # 显示每个网球的独立标签（修改：使用idx+1作为编号）
-            cv2.circle(processed_frame, (int(x), int(y)), int(radius), (0, 255, 0), 2)
+            # 绘制检测框和信息（修改显示内容）
+            cv2.rectangle(processed_frame, (x1, y1), (x2, y2), (0, 255, 0), 2)
             cv2.putText(processed_frame, 
-                        f"Ball{idx+1}: {distance:.1f}cm",  # 显示球编号（如Ball1、Ball2）
-                        (int(x) - 30, int(y) - 20), 
+                        f"Ball: {distance:.1f}cm (conf:{conf:.2f})",  # 显示置信度
+                        (x1, y1 - 10), 
                         cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 255, 0), 2)
         
         return balls, processed_frame

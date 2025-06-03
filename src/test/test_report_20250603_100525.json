@@ -1,0 +1,291 @@
+{
+  "timestamp": "2025-06-03 10:05:25",
+  "test_images": 31,
+  "metrics": {
+    "precision": 0.0,
+    "recall": 0.0,
+    "f1_score": 0.0,
+    "fps": 4.467679123805433
+  },
+  "details": [
+    {
+      "image_name": "1747468171.jpg",
+      "detections": 1,
+      "ground_truth": 0,
+      "true_positives": 0,
+      "false_positives": 1,
+      "false_negatives": 0,
+      "processing_time": 0.22826027870178223
+    },
+    {
+      "image_name": "1747468173.jpg",
+      "detections": 1,
+      "ground_truth": 0,
+      "true_positives": 0,
+      "false_positives": 1,
+      "false_negatives": 0,
+      "processing_time": 0.21932220458984375
+    },
+    {
+      "image_name": "1747468174.jpg",
+      "detections": 1,
+      "ground_truth": 0,
+      "true_positives": 0,
+      "false_positives": 1,
+      "false_negatives": 0,
+      "processing_time": 0.20221710205078125
+    },
+    {
+      "image_name": "1747468175.jpg",
+      "detections": 1,
+      "ground_truth": 0,
+      "true_positives": 0,
+      "false_positives": 1,
+      "false_negatives": 0,
+      "processing_time": 0.21135663986206055
+    },
+    {
+      "image_name": "1747468180.jpg",
+      "detections": 2,
+      "ground_truth": 0,
+      "true_positives": 0,
+      "false_positives": 2,
+      "false_negatives": 0,
+      "processing_time": 0.21795964241027832
+    },
+    {
+      "image_name": "1747468181.jpg",
+      "detections": 0,
+      "ground_truth": 0,
+      "true_positives": 0,
+      "false_positives": 0,
+      "false_negatives": 0,
+      "processing_time": 0.2299633026123047
+    },
+    {
+      "image_name": "1747468182.jpg",
+      "detections": 1,
+      "ground_truth": 0,
+      "true_positives": 0,
+      "false_positives": 1,
+      "false_negatives": 0,
+      "processing_time": 0.2099294662475586
+    },
+    {
+      "image_name": "1747468186.jpg",
+      "detections": 0,
+      "ground_truth": 0,
+      "true_positives": 0,
+      "false_positives": 0,
+      "false_negatives": 0,
+      "processing_time": 0.20453619956970215
+    },
+    {
+      "image_name": "1747468187.jpg",
+      "detections": 0,
+      "ground_truth": 0,
+      "true_positives": 0,
+      "false_positives": 0,
+      "false_negatives": 0,
+      "processing_time": 0.22093820571899414
+    },
+    {
+      "image_name": "1747468191.jpg",
+      "detections": 0,
+      "ground_truth": 0,
+      "true_positives": 0,
+      "false_positives": 0,
+      "false_negatives": 0,
+      "processing_time": 0.2509593963623047
+    },
+    {
+      "image_name": "1747468192.jpg",
+      "detections": 0,
+      "ground_truth": 0,
+      "true_positives": 0,
+      "false_positives": 0,
+      "false_negatives": 0,
+      "processing_time": 0.194929838180542
+    },
+    {
+      "image_name": "1747468193.jpg",
+      "detections": 1,
+      "ground_truth": 0,
+      "true_positives": 0,
+      "false_positives": 1,
+      "false_negatives": 0,
+      "processing_time": 0.2065575122833252
+    },
+    {
+      "image_name": "1747468194.jpg",
+      "detections": 2,
+      "ground_truth": 0,
+      "true_positives": 0,
+      "false_positives": 2,
+      "false_negatives": 0,
+      "processing_time": 0.22819828987121582
+    },
+    {
+      "image_name": "1747468201.jpg",
+      "detections": 0,
+      "ground_truth": 0,
+      "true_positives": 0,
+      "false_positives": 0,
+      "false_negatives": 0,
+      "processing_time": 0.2215118408203125
+    },
+    {
+      "image_name": "1747468204.jpg",
+      "detections": 0,
+      "ground_truth": 0,
+      "true_positives": 0,
+      "false_positives": 0,
+      "false_negatives": 0,
+      "processing_time": 0.25993800163269043
+    },
+    {
+      "image_name": "1747468206.jpg",
+      "detections": 0,
+      "ground_truth": 0,
+      "true_positives": 0,
+      "false_positives": 0,
+      "false_negatives": 0,
+      "processing_time": 0.21053862571716309
+    },
+    {
+      "image_name": "1747468209.jpg",
+      "detections": 0,
+      "ground_truth": 0,
+      "true_positives": 0,
+      "false_positives": 0,
+      "false_negatives": 0,
+      "processing_time": 0.21848154067993164
+    },
+    {
+      "image_name": "1747468211.jpg",
+      "detections": 2,
+      "ground_truth": 0,
+      "true_positives": 0,
+      "false_positives": 2,
+      "false_negatives": 0,
+      "processing_time": 0.19821691513061523
+    },
+    {
+      "image_name": "1747468218.jpg",
+      "detections": 1,
+      "ground_truth": 0,
+      "true_positives": 0,
+      "false_positives": 1,
+      "false_negatives": 0,
+      "processing_time": 0.2808701992034912
+    },
+    {
+      "image_name": "1747468226.jpg",
+      "detections": 1,
+      "ground_truth": 0,
+      "true_positives": 0,
+      "false_positives": 1,
+      "false_negatives": 0,
+      "processing_time": 0.2161540985107422
+    },
+    {
+      "image_name": "1747468229.jpg",
+      "detections": 2,
+      "ground_truth": 0,
+      "true_positives": 0,
+      "false_positives": 2,
+      "false_negatives": 0,
+      "processing_time": 0.24840283393859863
+    },
+    {
+      "image_name": "1747468234.jpg",
+      "detections": 2,
+      "ground_truth": 0,
+      "true_positives": 0,
+      "false_positives": 2,
+      "false_negatives": 0,
+      "processing_time": 0.2143726348876953
+    },
+    {
+      "image_name": "1747468236.jpg",
+      "detections": 2,
+      "ground_truth": 0,
+      "true_positives": 0,
+      "false_positives": 2,
+      "false_negatives": 0,
+      "processing_time": 0.20717120170593262
+    },
+    {
+      "image_name": "1747468237.jpg",
+      "detections": 2,
+      "ground_truth": 0,
+      "true_positives": 0,
+      "false_positives": 2,
+      "false_negatives": 0,
+      "processing_time": 0.2208089828491211
+    },
+    {
+      "image_name": "1747468255.jpg",
+      "detections": 2,
+      "ground_truth": 0,
+      "true_positives": 0,
+      "false_positives": 2,
+      "false_negatives": 0,
+      "processing_time": 0.21017789840698242
+    },
+    {
+      "image_name": "1747468256.jpg",
+      "detections": 2,
+      "ground_truth": 0,
+      "true_positives": 0,
+      "false_positives": 2,
+      "false_negatives": 0,
+      "processing_time": 0.20632410049438477
+    },
+    {
+      "image_name": "1747468266.jpg",
+      "detections": 0,
+      "ground_truth": 0,
+      "true_positives": 0,
+      "false_positives": 0,
+      "false_negatives": 0,
+      "processing_time": 0.25168657302856445
+    },
+    {
+      "image_name": "1747468272.jpg",
+      "detections": 0,
+      "ground_truth": 0,
+      "true_positives": 0,
+      "false_positives": 0,
+      "false_negatives": 0,
+      "processing_time": 0.23047566413879395
+    },
+    {
+      "image_name": "1747468293.jpg",
+      "detections": 0,
+      "ground_truth": 0,
+      "true_positives": 0,
+      "false_positives": 0,
+      "false_negatives": 0,
+      "processing_time": 0.23293185234069824
+    },
+    {
+      "image_name": "1747468296.jpg",
+      "detections": 0,
+      "ground_truth": 0,
+      "true_positives": 0,
+      "false_positives": 0,
+      "false_negatives": 0,
+      "processing_time": 0.21094894409179688
+    },
+    {
+      "image_name": "test_01.jpg",
+      "detections": 0,
+      "ground_truth": 1,
+      "true_positives": 0,
+      "false_positives": 0,
+      "false_negatives": 1,
+      "processing_time": 0.2745857238769531
+    }
+  ]
+}

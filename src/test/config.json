@@ -1,4 +1,3 @@
-
 {
     "hardware": {
         "board_type": "Orange Pi AIpro(20T)",
@@ -46,5 +45,10 @@
             "min_detection_threshold": 0.8,
             "fps_threshold": 10
         }
+    },
+    "yolov5": { 
+        "model_path": "./yolov5/runs/train/exp/weights/best.pt",  
+        "conf_threshold": 0.5,  
+        "iou_threshold": 0.45   
     }
 }
