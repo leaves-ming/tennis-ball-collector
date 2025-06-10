@@ -11,10 +11,14 @@
    - OpenCV 4.5+
 2. 安装依赖：
    ```bash
-   pip install -r requirements.txt
+   cd test
+   git clone https://github.com/ultralytics/yolov5  # 克隆YOLOv5仓库
+   pip install -r requirements.txt  # 安装依赖
    ```
 3. 配置文件：
    - config.yaml：模型配置、相机参数、机械臂控制参数等。
+   - 在src/test/yolov5/runs/train中放入训练好的，模型（可直接将test文件夹中的exp文件夹复制到runs/train中）
+   - 在test_images文件夹中放入测试图片，在ground_truth文件夹中放入对应的标注文件
 4. 运行项目：
    ```bash
    python main.py
